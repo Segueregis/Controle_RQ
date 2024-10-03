@@ -1,11 +1,10 @@
-
 import pandas as pd
 from dash import dcc, html, Dash
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 from dash_bootstrap_templates import ThemeSwitchAIO
 
-# Exemplo de Orçamento Fixo
+# Exemplo de Orçamento Fixo para UT-12, UT-31, UT-26 e UT-20
 data_ut12 = {
     'Conta': ['UNIFORME', 'EPI', 'FERRAMENTAS', 'MATERIAL APLICADO', 'MATERIAL CONSUMO', 'LOCAÇÃO MÁQUINAS',
               'DESPESA INFORMÁTICA', 'DESPESA TELEFONES CELULARES', 'SERVIÇOS CONTRATADOS',
@@ -20,28 +19,53 @@ data_ut31 = {
     'Orçamento': [1200.50, 3150.30, 1500.20, 3350.00, 850.00, 400.00, 100.00, 450.00, 1150.00, 320.00, 150.00, 50.00]
 }
 
-# Carregar as despesas da planilha para UT-12 e UT-31
+data_ut26 = {
+    'Conta': ['UNIFORME', 'EPI', 'FERRAMENTAS', 'MATERIAL APLICADO', 'MATERIAL CONSUMO', 'LOCAÇÃO MÁQUINAS',
+              'DESPESA INFORMÁTICA', 'DESPESA TELEFONES CELULARES', 'SERVIÇOS CONTRATADOS',
+              'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.', 'MANUTENÇÃO DE VEÍCULOS', 'CARTÃO COMBUSTÍVEL'],
+    'Orçamento': [1300.60, 2990.40, 1450.30, 3220.00, 810.00, 390.00, 110.00, 470.00, 1190.00, 330.00, 160.00, 60.00]
+}
+
+data_ut20 = {
+    'Conta': ['UNIFORME', 'EPI', 'FERRAMENTAS', 'MATERIAL APLICADO', 'MATERIAL CONSUMO', 'LOCAÇÃO MÁQUINAS',
+              'DESPESA INFORMÁTICA', 'DESPESA TELEFONES CELULARES', 'SERVIÇOS CONTRATADOS',
+              'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.', 'MANUTENÇÃO DE VEÍCULOS', 'CARTÃO COMBUSTÍVEL'],
+    'Orçamento': [1100.30, 2780.20, 1400.00, 3100.00, 790.00, 370.00, 90.00, 430.00, 1120.00, 300.00, 140.00, 40.00]
+}
+
+# Carregar as despesas da planilha para cada UT
 df_excel = pd.read_excel('Controle_orcamento.xlsx', sheet_name='Base')
 
-# Filtrar os dados para UT-12 e UT-31
+# Filtrar os dados para cada UT
 df_ut12_cru = df_excel[df_excel['UTS'] == 'UT-12']
 df_ut31_cru = df_excel[df_excel['UTS'] == 'UT-31']
+df_ut26_cru = df_excel[df_excel['UTS'] == 'UT-26']
+df_ut20_cru = df_excel[df_excel['UTS'] == 'UT-20']
 
 # Criar DataFrames baseados nos dados filtrados
 df_ut12 = pd.DataFrame(data_ut12)
 df_ut31 = pd.DataFrame(data_ut31)
+df_ut26 = pd.DataFrame(data_ut26)
+df_ut20 = pd.DataFrame(data_ut20)
 
-# Adicionar despesas e categorias às tabelas de UT-12 e UT-31
+# Adicionar despesas e categorias às tabelas de cada UT
 df_ut12['Despesas'] = df_ut12_cru['Despesas']
 df_ut12['Categoria'] = df_ut12_cru['CATEGORIA']
 df_ut31['Despesas'] = df_ut31_cru['Despesas']
 df_ut31['Categoria'] = df_ut31_cru['CATEGORIA']
+df_ut26['Despesas'] = df_ut26_cru['Despesas']
+df_ut26['Categoria'] = df_ut26_cru['CATEGORIA']
+df_ut20['Despesas'] = df_ut20_cru['Despesas']
+df_ut20['Categoria'] = df_ut20_cru['CATEGORIA']
 
-# Calcular as diferenças entre Orçamento e Despesas
+
+# Calcular as diferenças entre Orçamento e Despesas para cada UT
 df_ut12['Diferença'] = df_ut12['Orçamento'] - df_ut12['Despesas']
 df_ut31['Diferença'] = df_ut31['Orçamento'] - df_ut31['Despesas']
+df_ut26['Diferença'] = df_ut26['Orçamento'] - df_ut26['Despesas']
+df_ut20['Diferença'] = df_ut20['Orçamento'] - df_ut20['Despesas']
 
-# Cálculos do resultado final para UT-12 e UT-31
+# Cálculos do resultado final para cada UT
 orçamento_total_ut12 = df_ut12['Orçamento'].sum()
 despesas_totais_ut12 = df_ut12['Despesas'].sum()
 saldo_final_ut12 = orçamento_total_ut12 - despesas_totais_ut12
@@ -49,6 +73,14 @@ saldo_final_ut12 = orçamento_total_ut12 - despesas_totais_ut12
 orçamento_total_ut31 = df_ut31['Orçamento'].sum()
 despesas_totais_ut31 = df_ut31['Despesas'].sum()
 saldo_final_ut31 = orçamento_total_ut31 - despesas_totais_ut31
+
+orçamento_total_ut26 = df_ut26['Orçamento'].sum()
+despesas_totais_ut26 = df_ut26['Despesas'].sum()
+saldo_final_ut26 = orçamento_total_ut26 - despesas_totais_ut26
+
+orçamento_total_ut20 = df_ut20['Orçamento'].sum()
+despesas_totais_ut20 = df_ut20['Despesas'].sum()
+saldo_final_ut20 = orçamento_total_ut20 - despesas_totais_ut20
 
 # Gráfico de barras horizontais para UT-12
 fig_ut12 = go.Figure()
@@ -81,6 +113,41 @@ fig_ut31.add_trace(go.Bar(
     marker=dict(color=df_ut31['Diferença'].apply(lambda x: 'red' if x < 0 else 'green'))
 ))
 fig_ut31.update_layout(title="Controle Financeiro UT-31", xaxis_title="Valor em R$", yaxis_title="Contas", barmode='stack')
+
+# Gráfico de barras horizontais para UT-26
+fig_ut26 = go.Figure()
+fig_ut26.add_trace(go.Bar(
+    y=df_ut26['Conta'], x=df_ut26['Orçamento'], name='Orçamento', orientation='h',
+    marker=dict(color='rgba(58, 71, 80, 0.6)')
+))
+fig_ut26.add_trace(go.Bar(
+    y=df_ut26['Conta'], x=df_ut26['Despesas'], name='Despesas', orientation='h',
+    marker=dict(color='rgba(246, 78, 139, 0.6)')
+))
+fig_ut26.add_trace(go.Bar(
+    y=df_ut26['Conta'], x=df_ut26['Diferença'], name='Diferença', orientation='h',
+    marker=dict(color=df_ut26['Diferença'].apply(lambda x: 'red' if x < 0 else 'green'))
+))
+fig_ut26.update_layout(title="Controle Financeiro UT-26", xaxis_title="Valor em R$", yaxis_title="Contas", barmode='stack')
+
+# Gráfico de barras horizontais para UT-20
+fig_ut20 = go.Figure()
+fig_ut20.add_trace(go.Bar(
+    y=df_ut20['Conta'], x=df_ut20['Orçamento'], name='Orçamento', orientation='h',
+    marker=dict(color='rgba(58, 71, 80, 0.6)')
+))
+fig_ut20.add_trace(go.Bar(
+    y=df_ut20['Conta'], x=df_ut20['Despesas'], name='Despesas', orientation='h',
+    marker=dict(color='rgba(246, 78, 139, 0.6)')
+))
+fig_ut20.add_trace(go.Bar(
+    y=df_ut20['Conta'], x=df_ut20['Diferença'], name='Diferença', orientation='h',
+    marker=dict(color=df_ut20['Diferença'].apply(lambda x: 'red' if x < 0 else 'green'))
+))
+fig_ut20.update_layout(title="Controle Financeiro UT-20", xaxis_title="Valor em R$", yaxis_title="Contas", barmode='stack')
+
+
+
 
 # Configurações de estilo
 tab_card = {'height': '100%'}
@@ -120,42 +187,72 @@ app.layout = dbc.Container([
     dbc.Row([
         # Coluna UT-12
         dbc.Col([
-            # Resumo UT-12
             dbc.Card([
                 dbc.CardBody([
                     html.H5(f"Orçamento Total UT-12: R$ {orçamento_total_ut12:,.2f}"),
                     html.H5(f"Total Gasto UT-12: R$ {despesas_totais_ut12:,.2f}"),
                     html.H5(f"Saldo Final UT-12: R$ {saldo_final_ut12:,.2f}",
                             style={"color": "red" if saldo_final_ut12 < 0 else "green"}),
-                ], style={'padding': '10px'})  # Diminuir o padding
-            ], style={'height': '120px', 'margin-bottom': '10px'}),  # Definir altura menor
-
-            # Gráfico UT-12
+                ], style={'padding': '10px'})
+            ], style={'height': '120px', 'margin-bottom': '10px'}),
             dbc.Card([
                 dbc.CardBody([
-                    dcc.Graph(figure=fig_ut12, config=config_graph)
+                    dcc.Graph(figure=fig_ut12)
                 ])
-            ], style=tab_card)
+            ]),
         ], sm=12, lg=6),
 
         # Coluna UT-31
         dbc.Col([
-            # Resumo UT-31
             dbc.Card([
                 dbc.CardBody([
                     html.H5(f"Orçamento Total UT-31: R$ {orçamento_total_ut31:,.2f}"),
                     html.H5(f"Total Gasto UT-31: R$ {despesas_totais_ut31:,.2f}"),
                     html.H5(f"Saldo Final UT-31: R$ {saldo_final_ut31:,.2f}",
                             style={"color": "red" if saldo_final_ut31 < 0 else "green"}),
-                ], style={'padding': '10px'})  # Diminuir o padding
-            ], style={'height': '120px', 'margin-bottom': '10px'}),  # Definir altura menor
-
-            # Gráfico UT-31
+                ], style={'padding': '10px'})
+            ], style={'height': '120px', 'margin-bottom': '10px'}),
             dbc.Card([
                 dbc.CardBody([
-                    dcc.Graph(figure=fig_ut31, config=config_graph)
+                    dcc.Graph(figure=fig_ut31)
                 ])
-            ], style=tab_card)
+            ]),
+        ], sm=12, lg=6)
+    ]),
+
+    dbc.Row([
+        # Coluna UT-26
+        dbc.Col([
+            dbc.Card([
+                dbc.CardBody([
+                    html.H5(f"Orçamento Total UT-26: R$ {orçamento_total_ut26:,.2f}"),
+                    html.H5(f"Total Gasto UT-26: R$ {despesas_totais_ut26:,.2f}"),
+                    html.H5(f"Saldo Final UT-26: R$ {saldo_final_ut26:,.2f}",
+                            style={"color": "red" if saldo_final_ut26 < 0 else "green"}),
+                ], style={'padding': '10px'})
+            ], style={'height': '120px', 'margin-bottom': '10px'}),
+            dbc.Card([
+                dbc.CardBody([
+                    dcc.Graph(figure=fig_ut26)
+                ])
+            ]),
+        ], sm=12, lg=6),
+
+        # Coluna UT-20
+        dbc.Col([
+            dbc.Card([
+                dbc.CardBody([
+                    html.H5(f"Orçamento Total UT-20: R$ {orçamento_total_ut20:,.2f}"),
+                    html.H5(f"Total Gasto UT-20: R$ {despesas_totais_ut20:,.2f}"),
+                    html.H5(f"Saldo Final UT-20: R$ {saldo_final_ut20:,.2f}",
+                            style={"color": "red" if saldo_final_ut20 < 0 else "green"}),
+                ], style={'padding': '10px'})
+            ], style={'height': '120px', 'margin-bottom': '10px'}),
+            dbc.Card([
+                dbc.CardBody([
+                    dcc.Graph(figure=fig_ut20)
+                ])
+            ]),
         ], sm=12, lg=6)
     ])
 ], fluid=True)
