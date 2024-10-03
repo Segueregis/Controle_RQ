@@ -5,3 +5,4 @@ dash-bootstrap-components==1.4.1
 gunicorn==20.1.0
 numpy==1.23.5
 pandas==1.5.3
+dash-bootstrap-templates
