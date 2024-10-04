@@ -7,6 +7,10 @@ from dash_bootstrap_templates import ThemeSwitchAIO
 # Inicializando o app Dash com tema Bootstrap
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+# Expondo o servidor para o Gunicorn
+server = app.server
+
+
 
 # Exemplo de Orçamento Fixo para UT-12, UT-31, UT-26 e UT-20
 data_ut12 = {
