@@ -5,19 +5,9 @@ import plotly.graph_objects as go
 from dash_bootstrap_templates import ThemeSwitchAIO
 from flask import Flask
 
-# Inicialize o Flask
-server = Flask(__name__)
-
-# Tratando requisições HEAD para evitar erro
-@server.route('/', methods=['GET', 'HEAD'])
-def index():
-    return "App is running"
 
 # Inicializando o app Dash com tema Bootstrap
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-
-# Expondo o servidor para o Gunicorn
-server = app.server
 
 
 
@@ -282,6 +272,9 @@ app.layout = dbc.Container([
 ],
     fluid=True  # Faz o container ocupar toda a largura da tela
 )
+
+# Run the app
+server = app.server
 
 if __name__ == '__main__':
     app.run_server(debug=True)
