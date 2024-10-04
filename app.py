@@ -3,6 +3,15 @@ from dash import dcc, html, Dash
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 from dash_bootstrap_templates import ThemeSwitchAIO
+from flask import Flask
+
+# Inicialize o Flask
+server = Flask(__name__)
+
+# Tratando requisições HEAD para evitar erro
+@server.route('/', methods=['GET', 'HEAD'])
+def index():
+    return "App is running"
 
 # Inicializando o app Dash com tema Bootstrap
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
