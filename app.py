@@ -4,12 +4,16 @@ import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 from dash_bootstrap_templates import ThemeSwitchAIO
 
+# Inicializando o app Dash com tema Bootstrap
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+
 # Exemplo de Orçamento Fixo para UT-12, UT-31, UT-26 e UT-20
 data_ut12 = {
     'Conta': ['UNIFORME', 'EPI', 'FERRAMENTAS', 'MATERIAL APLICADO', 'MATERIAL CONSUMO', 'LOCAÇÃO MÁQUINAS',
               'DESPESA INFORMÁTICA', 'DESPESA TELEFONES CELULARES', 'SERVIÇOS CONTRATADOS',
               'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.', 'MANUTENÇÃO DE VEÍCULOS', 'CARTÃO COMBUSTÍVEL'],
-    'Orçamento': [4459.10, 3315.28, 1633.50, 3448.50, 889.35, 381.15, 80.00, 419.35, 1089.00, 290.40, 108.90, 0.00]
+    'Orçamento': [1459.10, 3315.28, 1633.50, 3448.50, 889.35, 381.15, 80.00, 419.35, 1089.00, 290.40, 108.90, 0.00]
 }
 
 data_ut31 = {
@@ -82,70 +86,69 @@ orçamento_total_ut20 = df_ut20['Orçamento'].sum()
 despesas_totais_ut20 = df_ut20['Despesas'].sum()
 saldo_final_ut20 = orçamento_total_ut20 - despesas_totais_ut20
 
-# Gráfico de barras horizontais para UT-12
+# Gráfico de barras verticais para UT-12
 fig_ut12 = go.Figure()
 fig_ut12.add_trace(go.Bar(
-    y=df_ut12['Conta'], x=df_ut12['Orçamento'], name='Orçamento', orientation='h',
+    x=df_ut12['Conta'], y=df_ut12['Orçamento'], name='Orçamento',
     marker=dict(color='rgba(58, 71, 80, 0.6)')
 ))
 fig_ut12.add_trace(go.Bar(
-    y=df_ut12['Conta'], x=df_ut12['Despesas'], name='Despesas', orientation='h',
+    x=df_ut12['Conta'], y=df_ut12['Despesas'], name='Despesas',
     marker=dict(color='rgba(246, 78, 139, 0.6)')
 ))
 fig_ut12.add_trace(go.Bar(
-    y=df_ut12['Conta'], x=df_ut12['Diferença'], name='Diferença', orientation='h',
+    x=df_ut12['Conta'], y=df_ut12['Diferença'], name='Diferença',
     marker=dict(color=df_ut12['Diferença'].apply(lambda x: 'red' if x < 0 else 'green'))
 ))
-fig_ut12.update_layout(title="Controle Financeiro UT-12", xaxis_title="Valor em R$", yaxis_title="Contas", barmode='stack')
+fig_ut12.update_layout(title="Controle Financeiro UT-12", yaxis_title="Valor em R$", xaxis_title="Contas", barmode='stack')
 
-# Gráfico de barras horizontais para UT-31
+# Gráfico de barras verticais para UT-31
 fig_ut31 = go.Figure()
 fig_ut31.add_trace(go.Bar(
-    y=df_ut31['Conta'], x=df_ut31['Orçamento'], name='Orçamento', orientation='h',
+    x=df_ut31['Conta'], y=df_ut31['Orçamento'], name='Orçamento',
     marker=dict(color='rgba(58, 71, 80, 0.6)')
 ))
 fig_ut31.add_trace(go.Bar(
-    y=df_ut31['Conta'], x=df_ut31['Despesas'], name='Despesas', orientation='h',
+    x=df_ut31['Conta'], y=df_ut31['Despesas'], name='Despesas',
     marker=dict(color='rgba(246, 78, 139, 0.6)')
 ))
 fig_ut31.add_trace(go.Bar(
-    y=df_ut31['Conta'], x=df_ut31['Diferença'], name='Diferença', orientation='h',
+    x=df_ut31['Conta'], y=df_ut31['Diferença'], name='Diferença',
     marker=dict(color=df_ut31['Diferença'].apply(lambda x: 'red' if x < 0 else 'green'))
 ))
-fig_ut31.update_layout(title="Controle Financeiro UT-31", xaxis_title="Valor em R$", yaxis_title="Contas", barmode='stack')
+fig_ut31.update_layout(title="Controle Financeiro UT-31", yaxis_title="Valor em R$", xaxis_title="Contas", barmode='stack')
 
-# Gráfico de barras horizontais para UT-26
+# Gráfico de barras verticais para UT-26
 fig_ut26 = go.Figure()
 fig_ut26.add_trace(go.Bar(
-    y=df_ut26['Conta'], x=df_ut26['Orçamento'], name='Orçamento', orientation='h',
+    x=df_ut26['Conta'], y=df_ut26['Orçamento'], name='Orçamento',
     marker=dict(color='rgba(58, 71, 80, 0.6)')
 ))
 fig_ut26.add_trace(go.Bar(
-    y=df_ut26['Conta'], x=df_ut26['Despesas'], name='Despesas', orientation='h',
+    x=df_ut26['Conta'], y=df_ut26['Despesas'], name='Despesas',
     marker=dict(color='rgba(246, 78, 139, 0.6)')
 ))
 fig_ut26.add_trace(go.Bar(
-    y=df_ut26['Conta'], x=df_ut26['Diferença'], name='Diferença', orientation='h',
+    x=df_ut26['Conta'], y=df_ut26['Diferença'], name='Diferença',
     marker=dict(color=df_ut26['Diferença'].apply(lambda x: 'red' if x < 0 else 'green'))
 ))
-fig_ut26.update_layout(title="Controle Financeiro UT-26", xaxis_title="Valor em R$", yaxis_title="Contas", barmode='stack')
+fig_ut26.update_layout(title="Controle Financeiro UT-26", yaxis_title="Valor em R$", xaxis_title="Contas", barmode='stack')
 
-# Gráfico de barras horizontais para UT-20
+# Gráfico de barras verticais para UT-20
 fig_ut20 = go.Figure()
 fig_ut20.add_trace(go.Bar(
-    y=df_ut20['Conta'], x=df_ut20['Orçamento'], name='Orçamento', orientation='h',
+    x=df_ut20['Conta'], y=df_ut20['Orçamento'], name='Orçamento',
     marker=dict(color='rgba(58, 71, 80, 0.6)')
 ))
 fig_ut20.add_trace(go.Bar(
-    y=df_ut20['Conta'], x=df_ut20['Despesas'], name='Despesas', orientation='h',
+    x=df_ut20['Conta'], y=df_ut20['Despesas'], name='Despesas',
     marker=dict(color='rgba(246, 78, 139, 0.6)')
 ))
 fig_ut20.add_trace(go.Bar(
-    y=df_ut20['Conta'], x=df_ut20['Diferença'], name='Diferença', orientation='h',
+    x=df_ut20['Conta'], y=df_ut20['Diferença'], name='Diferença',
     marker=dict(color=df_ut20['Diferença'].apply(lambda x: 'red' if x < 0 else 'green'))
 ))
-fig_ut20.update_layout(title="Controle Financeiro UT-20", xaxis_title="Valor em R$", yaxis_title="Contas", barmode='stack')
-
+fig_ut20.update_layout(title="Controle Financeiro UT-20", yaxis_title="Valor em R$", xaxis_title="Contas", barmode='stack')
 
 
 
@@ -183,10 +186,10 @@ app.layout = dbc.Container([
         ], sm=12, lg=4)
     ]),
 
-    # Resumo e gráficos de UT-12 e UT-31
+    # UT-12
     dbc.Row([
-        # Coluna UT-12
         dbc.Col([
+            # Informações de Orçamento UT-12
             dbc.Card([
                 dbc.CardBody([
                     html.H5(f"Orçamento Total UT-12: R$ {orçamento_total_ut12:,.2f}"),
@@ -195,15 +198,19 @@ app.layout = dbc.Container([
                             style={"color": "red" if saldo_final_ut12 < 0 else "green"}),
                 ], style={'padding': '10px'})
             ], style={'height': '120px', 'margin-bottom': '10px'}),
+            # Gráfico UT-12
             dbc.Card([
                 dbc.CardBody([
-                    dcc.Graph(figure=fig_ut12)
+                    dcc.Graph(figure=fig_ut12, style={'width': '100%', 'height': '600px'})
                 ])
             ]),
-        ], sm=12, lg=6),
+        ], width=12),
+    ], style={'margin-bottom': '20px'}),  # Espaçamento entre os blocos
 
-        # Coluna UT-31
+    # UT-31
+    dbc.Row([
         dbc.Col([
+            # Informações de Orçamento UT-31
             dbc.Card([
                 dbc.CardBody([
                     html.H5(f"Orçamento Total UT-31: R$ {orçamento_total_ut31:,.2f}"),
@@ -212,16 +219,18 @@ app.layout = dbc.Container([
                             style={"color": "red" if saldo_final_ut31 < 0 else "green"}),
                 ], style={'padding': '10px'})
             ], style={'height': '120px', 'margin-bottom': '10px'}),
+            # Gráfico UT-31
             dbc.Card([
                 dbc.CardBody([
-                    dcc.Graph(figure=fig_ut31)
+                    dcc.Graph(figure=fig_ut31, style={'width': '100%', 'height': '600px'})
                 ])
             ]),
-        ], sm=12, lg=6)
-    ]),
+        ], width=12),
+    ], style={'margin-bottom': '20px'}),  # Espaçamento entre os blocos
 
+    # Outros gráficos e informações seguem o mesmo padrão, por exemplo UT-26 e UT-20
+    # UT-26
     dbc.Row([
-        # Coluna UT-26
         dbc.Col([
             dbc.Card([
                 dbc.CardBody([
@@ -233,12 +242,14 @@ app.layout = dbc.Container([
             ], style={'height': '120px', 'margin-bottom': '10px'}),
             dbc.Card([
                 dbc.CardBody([
-                    dcc.Graph(figure=fig_ut26)
+                    dcc.Graph(figure=fig_ut26, style={'width': '100%', 'height': '600px'})
                 ])
             ]),
-        ], sm=12, lg=6),
+        ], width=12),
+    ], style={'margin-bottom': '20px'}),
 
-        # Coluna UT-20
+    # UT-20
+    dbc.Row([
         dbc.Col([
             dbc.Card([
                 dbc.CardBody([
@@ -250,16 +261,14 @@ app.layout = dbc.Container([
             ], style={'height': '120px', 'margin-bottom': '10px'}),
             dbc.Card([
                 dbc.CardBody([
-                    dcc.Graph(figure=fig_ut20)
+                    dcc.Graph(figure=fig_ut20, style={'width': '100%', 'height': '600px'})
                 ])
             ]),
-        ], sm=12, lg=6)
-    ])
-], fluid=True)
-
-# Run the app
-server = app.server
+        ], width=12),
+    ], style={'margin-bottom': '20px'}),
+],
+    fluid=True  # Faz o container ocupar toda a largura da tela
+)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
