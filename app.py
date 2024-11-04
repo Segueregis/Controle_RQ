@@ -144,7 +144,7 @@ app.layout = dbc.Container([
                                     id='mes-dropdown',
                                     options=[{'label': 'Outubro', 'value': 'outubro'},
                                              {'label': 'Novembro', 'value': 'novembro'}],
-                                    value='outubro',
+                                    value='novembro',
                                     placeholder="Selecione um mês",
                                     style={
                                         'width': '150px',
