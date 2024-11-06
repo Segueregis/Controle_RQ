@@ -70,7 +70,7 @@ def serve_app2():
     return app2.layout  # Retorna o layout de app2
 
 # Run the app
-server = app.server
+server = app2.server
 
 if __name__ == '__main__':
     app.run_server(debug=True)
