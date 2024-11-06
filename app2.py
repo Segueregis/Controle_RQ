@@ -69,5 +69,8 @@ def update_table(n_clicks, rq_number):
 def serve_app2():
     return app2.layout  # Retorna o layout de app2
 
-if __name__ == "__main__":
-    app2.run_server(debug=True)
+# Run the app
+server = app.server
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
