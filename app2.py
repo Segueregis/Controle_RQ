@@ -73,4 +73,4 @@ def serve_app2():
 server = app2.server
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app2.run_server(debug=True)
