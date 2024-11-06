@@ -1,10 +1,14 @@
-import pandas as pd
-from dash import dcc, html, Dash, Input, Output, State
+from dash import Dash, dcc, html, Input, Output, State
 import dash_bootstrap_components as dbc
+import pandas as pd
 import plotly.graph_objects as go
+from flask import Flask
 
-# Inicialize o novo app com tema Bootstrap
-app2 = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY, dbc.themes.DARKLY])
+# Inicializar o servidor Flask
+server = Flask(__name__)
+
+# Criar o app Dash usando o servidor Flask
+app2 = Dash(__name__, server=server, external_stylesheets=[dbc.themes.FLATLY, dbc.themes.DARKLY])
 
 # Carregar os dados para uso em `app2.py`
 df_outubro = pd.read_excel('Controle_orcamento_outubro.xlsx', sheet_name='Base')
@@ -59,6 +63,11 @@ def update_table(n_clicks, rq_number):
     # Retorna uma tabela em branco se nada for filtrado
     return go.Figure()
 
+
+# Defina a rota para a URL /app2
+@app2.server.route('/app2')
+def serve_app2():
+    return app2.layout  # Retorna o layout de app2
 
 if __name__ == "__main__":
     app2.run_server(debug=True)
