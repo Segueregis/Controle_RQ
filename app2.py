@@ -69,8 +69,5 @@ def update_table(n_clicks, rq_number):
 def serve_app2():
     return app2.layout  # Retorna o layout de app2
 
-# Run the app
+# Define `server` para uso com o Gunicorn
 server = app2.server
-
-if __name__ == '__main__':
-    app2.run_server(debug=True)
