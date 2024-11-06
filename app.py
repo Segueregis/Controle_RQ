@@ -1,11 +1,15 @@
 import pandas as pd
-from dash import dcc, html, Dash, Input, Output
+from dash import dcc, html, Dash, Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 from dash_bootstrap_templates import ThemeSwitchAIO
 
-# Inicializando o app Dash com tema Bootstrap
+
+# Inicialize o app com tema Bootstrap
 app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY, dbc.themes.DARKLY])
+app.config.suppress_callback_exceptions = True
+
+
 
 # Carregar as despesas da planilha
 df_outubro = pd.read_excel('Controle_orcamento_outubro.xlsx', sheet_name='Base')
@@ -123,8 +127,44 @@ def criar_grafico(df, ut_key):
 ut_data = {ut_key: process_ut_data(ut_key, data[ut_key], df_outubro) for ut_key in data.keys()}
 figures = {ut_key: criar_grafico(ut_data[ut_key][0], ut_key) for ut_key in ut_data.keys()}
 
+# Configuração do menu hambúrguer
+hamburger_menu = html.Div(
+    [
+        dbc.Button(
+            html.Span(className="navbar-toggler-icon"),
+            id="open-offcanvas",
+            color="secondary",
+            style={"width": "30px", "height": "30px", "padding": "5px"}
+        ),
+        dbc.Offcanvas(
+            [
+                html.H5("Menu", className="offcanvas-title"),
+                html.Hr(),
+                dbc.Nav(
+                    [
+                        dbc.NavLink("CLICK AQUI PARA PESQUISAR RQ", href="/app2", id="num-rq-link", target="_blank"),
+                    ],
+                    vertical=True,
+                    pills=True,
+                ),
+            ],
+            id="offcanvas",
+            title="Opções",
+            is_open=False,
+        ),
+    ]
+)
+
+
+
+
 # Layout do dashboard
 app.layout = dbc.Container([
+    # Linha para o menu hambúrguer
+    dbc.Row([
+        dbc.Col(hamburger_menu, width="auto"),
+    ], style={'margin-bottom': '20px'}),
+
     # Linha para o dropdown do mês
     dbc.Row([
         dbc.Col([
@@ -153,8 +193,8 @@ app.layout = dbc.Container([
                                         'border': '1px solid #cccccc'  # Borda cinza claro
                                     }
                                 )
-                            ], style={'background-color': '#e6e6e6', 'padding': '5px'})
-                            # Fundo cinza claro e padding ao redor do dropdown
+                            ], style={'background-color': '#f5f5f5', 'padding': '5px'})
+                            # Fundo cinza bem claro e padding ao redor do dropdown
                         ], width="auto"),
 
                         # Botão de troca de tema
@@ -227,9 +267,25 @@ def update_graphs(selected_month):
 
     return figures + orcamentos + gastos + saldos
 
+# Callback para abrir e fechar o menu
+@app.callback(
+    Output("offcanvas", "is_open"),
+    Input("open-offcanvas", "n_clicks"),
+    State("offcanvas", "is_open")
+)
+def toggle_offcanvas(n_clicks, is_open):
+    if n_clicks:
+        return not is_open
+    return is_open
+
+
+
 
 # Run the app
 server = app.server
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
+
+
