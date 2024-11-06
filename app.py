@@ -127,14 +127,21 @@ def criar_grafico(df, ut_key):
 ut_data = {ut_key: process_ut_data(ut_key, data[ut_key], df_outubro) for ut_key in data.keys()}
 figures = {ut_key: criar_grafico(ut_data[ut_key][0], ut_key) for ut_key in ut_data.keys()}
 
-# Configuração do menu hambúrguer
+# Configuração do menu hambúrguer com ícone personalizado
 hamburger_menu = html.Div(
     [
         dbc.Button(
-            html.Span(className="navbar-toggler-icon"),
+            html.Img(
+                src="/assets/menu.png",  # Caminho para o ícone no diretório assets
+                style={
+                    "width": "35px",  # Tamanho do ícone
+                    "height": "35px",
+                    "cursor": "pointer",  # Mostra que é clicável
+                }
+            ),
             id="open-offcanvas",
             color="secondary",
-            style={"width": "30px", "height": "30px", "padding": "5px"}
+            style={"width": "30px", "height": "30px", "padding": "5px", "background-color": "transparent", "border": "none"}
         ),
         dbc.Offcanvas(
             [
@@ -158,12 +165,16 @@ hamburger_menu = html.Div(
 
 
 
+
 # Layout do dashboard
 app.layout = dbc.Container([
     # Linha para o menu hambúrguer
-    dbc.Row([
-        dbc.Col(hamburger_menu, width="auto"),
-    ], style={'margin-bottom': '20px'}),
+    dbc.Row(
+        [
+            dbc.Col(hamburger_menu, width="auto"),  # Inclui o menu com o ícone personalizado
+        ],
+        style={'margin-bottom': '20px', 'justify-content': 'flex-start'}  # Alinha o menu no canto superior esquerdo
+    ),
 
     # Linha para o dropdown do mês
     dbc.Row([
