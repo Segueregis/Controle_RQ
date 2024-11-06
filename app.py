@@ -149,7 +149,8 @@ hamburger_menu = html.Div(
                 html.Hr(),
                 dbc.Nav(
                     [
-                        dbc.NavLink("CLICK AQUI PARA PESQUISAR RQ", href="/app2", id="num-rq-link", target="_blank"),
+                        dbc.NavLink("CLICK AQUI PARA PESQUISAR RQ", href="/app2", id="num-rq-link"),
+
                     ],
                     vertical=True,
                     pills=True,
