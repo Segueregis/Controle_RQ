@@ -149,8 +149,12 @@ hamburger_menu = html.Div(
                 html.Hr(),
                 dbc.Nav(
                     [
-                        dbc.NavLink("CLICK AQUI PARA PESQUISAR RQ", href="/app2", id="num-rq-link"),
-
+                        dbc.NavLink(
+                            "CLICK AQUI PARA PESQUISAR RQ",
+                            href="https://controle-rq-2.onrender.com",  # Link para a página do projeto
+                            target="_blank",  # Abre em uma nova aba
+                            id="num-rq-link",
+                        ),
                     ],
                     vertical=True,
                     pills=True,
@@ -301,3 +305,6 @@ if __name__ == '__main__':
 
 
 
+
+
+# ESSE E A ULTIMA ATUALIZAÇÃO DO APP.PY
