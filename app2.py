@@ -11,7 +11,7 @@ server = Flask(__name__)
 app2 = Dash(__name__, server=server, external_stylesheets=[dbc.themes.FLATLY, dbc.themes.DARKLY])
 
 # Carregar os dados para uso em `app2.py`
-df_outubro = pd.read_excel('Controle_orcamento_outubro.xlsx', sheet_name='Base')
+df_outubro = pd.read_excel('Controle_orcamento_outubro.xlsx', sheet_name='Pendentes')
 df_novembro = pd.read_excel('Controle_orcamento_novembro.xlsx', sheet_name='Base')
 
 # Layout do segundo dashboard
