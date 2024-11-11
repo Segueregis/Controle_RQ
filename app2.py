@@ -102,7 +102,7 @@ def update_table_and_download(n_clicks_buscar, n_clicks_download, rq_number, dat
     return data, columns, None, triggered_id
 
 
-# Defina a rota para a URL /app2
+# Defina a rotaa para a URL /app2
 @app2.server.route('/app2')
 def serve_app2():
     return app2.layout  # Retorna o layout de app2
