@@ -1,4 +1,4 @@
-from dash import Dash, dcc, html, Input, Output, State, dash_table
+from dash import Dash, dcc, html, Input, Output, State, dash_table, callback_context
 import dash_bootstrap_components as dbc
 import pandas as pd
 import io
@@ -34,23 +34,28 @@ app2.layout = dbc.Container([
             style_header={'backgroundColor': 'lightgrey', 'color': 'black', 'fontWeight': 'bold'}
         )),
         dcc.Download(id="download-dataframe-xlsx")
-    ])
+    ]),
+    dcc.Store(id="last-clicked")  # Armazena o último botão clicado
 ])
-
 
 # Callback para atualizar a tabela com base no Número RQ e no intervalo de datas
 @app2.callback(
     Output("rq-table", "data"),
     Output("rq-table", "columns"),
     Output("download-dataframe-xlsx", "data"),
+    Output("last-clicked", "data"),
     Input("buscar-rq", "n_clicks"),
     Input("download-excel", "n_clicks"),
     State("rq-input", "value"),
     State("data-inicio", "date"),
     State("data-fim", "date"),
+    State("last-clicked", "data"),
     prevent_initial_call=True
 )
-def update_table_and_download(n_clicks_buscar, n_clicks_download, rq_number, data_inicio, data_fim):
+def update_table_and_download(n_clicks_buscar, n_clicks_download, rq_number, data_inicio, data_fim, last_clicked):
+    # Determinar qual botão foi clicado por último
+    triggered_id = callback_context.triggered[0]["prop_id"].split(".")[0]
+
     # Concatenar os dados de outubro e novembro
     df_combined = pd.concat([df_outubro, df_novembro])
 
@@ -65,7 +70,7 @@ def update_table_and_download(n_clicks_buscar, n_clicks_download, rq_number, dat
         df_filtered = df_filtered[
             (df_filtered['DATA CRIACAO'] >= data_inicio) &
             (df_filtered['DATA CRIACAO'] <= data_fim)
-            ]
+        ]
 
     # Formatar a coluna 'DATA CRIACAO' para o formato DD/MM/AAAA
     if 'DATA CRIACAO' in df_filtered.columns:
@@ -81,8 +86,8 @@ def update_table_and_download(n_clicks_buscar, n_clicks_download, rq_number, dat
     # Preparar os dados para exibição na tabela
     data = df_filtered.to_dict('records')
 
-    # Se o botão de download for clicado, gerar o arquivo Excel em memória
-    if n_clicks_download > 0 and not df_filtered.empty:
+    # Gerenciar o clique do botão "Baixar Excel"
+    if triggered_id == "download-excel" and not df_filtered.empty:
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
             # Converte a coluna 'DESPESAS' para número antes de salvar no Excel
@@ -91,9 +96,10 @@ def update_table_and_download(n_clicks_buscar, n_clicks_download, rq_number, dat
             df_excel.to_excel(writer, index=False, sheet_name='Dados Filtrados')
             writer.close()
         buffer.seek(0)
-        return data, columns, dcc.send_bytes(buffer.getvalue(), "dados_filtrados.xlsx")
+        return data, columns, dcc.send_bytes(buffer.getvalue(), "dados_filtrados.xlsx"), "download-excel"
 
-    return data, columns, None
+    # Atualizar a tabela sem acionar o download
+    return data, columns, None, triggered_id
 
 
 # Defina a rota para a URL /app2
