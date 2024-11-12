@@ -29,9 +29,15 @@ app2.layout = dbc.Container([
     dbc.Row([
         dbc.Col(dash_table.DataTable(
             id="rq-table",
-            style_table={'overflowX': 'auto'},
+            style_table={
+                'overflowX': 'auto',
+                'maxHeight': '500px',   # Define a altura máxima para a tabela com barra de rolagem
+                'overflowY': 'auto',
+                'position': 'relative',
+            },
             style_data={'color': 'black', 'backgroundColor': 'white'},  # Cor do texto preta e fundo branco
-            style_header={'backgroundColor': 'lightgrey', 'color': 'black', 'fontWeight': 'bold'}
+            style_header={'backgroundColor': 'lightgrey', 'color': 'black', 'fontWeight': 'bold'},
+            fixed_rows={'headers': True},  # Fixa o cabeçalho enquanto rola verticalmente
         )),
         dcc.Download(id="download-dataframe-xlsx")
     ]),
