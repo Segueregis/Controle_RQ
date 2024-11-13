@@ -35,9 +35,16 @@ app2.layout = dbc.Container([
                 'overflowY': 'auto',
                 'position': 'relative',
             },
-            style_data={'color': 'black', 'backgroundColor': 'white'},  # Cor do texto preta e fundo branco
-            style_header={'backgroundColor': 'lightgrey', 'color': 'black', 'fontWeight': 'bold'},
-            fixed_rows={'headers': True},  # Fixa o cabeçalho enquanto rola verticalmente
+            style_data={
+                'color': 'black',  # Texto preto para dados
+                'backgroundColor': '#E6F7FF'  # Fundo azul clarinho para dados
+            },
+            style_header={
+                'backgroundColor': '#2c74ac',  # Fundo azul mais forte para cabeçalho
+                'color': 'white',  # Texto branco para cabeçalho
+                'fontWeight': 'bold'
+            },
+            fixed_rows={'headers': True},  # Fixa o cabeçalho ao rolar a tabela
         )),
         dcc.Download(id="download-dataframe-xlsx")
     ]),
