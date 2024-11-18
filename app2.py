@@ -2,13 +2,25 @@ from dash import Dash, dcc, html, Input, Output, State, dash_table, callback_con
 import dash_bootstrap_components as dbc
 import pandas as pd
 import io
+import os
 from flask import Flask
+from datetime import datetime
 
 # Inicializar o servidor Flask
 server = Flask(__name__)
 
 # Criar o app Dash usando o servidor Flask
 app2 = Dash(__name__, server=server, external_stylesheets=[dbc.themes.FLATLY, dbc.themes.DARKLY])
+
+# Obter a data de modificação da planilha
+def get_last_update(file_path):
+    timestamp = os.path.getmtime(file_path)
+    return datetime.fromtimestamp(timestamp).strftime('%d/%m/%Y %H:%M:%S')
+
+# Obter as datas de modificação dos arquivos
+last_update_outubro = get_last_update('Controle_orcamento_outubro.xlsx')
+last_update_novembro = get_last_update('Controle_orcamento_novembro.xlsx')
+
 
 # Carregar os dados para uso em `app2.py`
 df_outubro = pd.read_excel('Controle_orcamento_outubro.xlsx', sheet_name='Base')
