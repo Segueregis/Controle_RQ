@@ -12,10 +12,14 @@ server = Flask(__name__)
 # Criar o app Dash usando o servidor Flask
 app2 = Dash(__name__, server=server, external_stylesheets=[dbc.themes.FLATLY, dbc.themes.DARKLY])
 
-# Obter a data de modificação da planilha
+# Obter a data de modificação da planilha com ajuste para o fuso horário de Brasília
 def get_last_update(file_path):
     timestamp = os.path.getmtime(file_path)
-    return datetime.fromtimestamp(timestamp).strftime('%d/%m/%Y %H:%M:%S')
+    local_time = datetime.fromtimestamp(timestamp)
+    brasilia_tz = pytz.timezone('America/Sao_Paulo')  # Definir o fuso horário de Brasília
+    local_time = local_time.astimezone(brasilia_tz)   # Converter para o fuso horário de Brasília
+    return local_time.strftime('%d/%m/%Y %H:%M:%S')
+
 
 # Obter as datas de última modificação das planilhas
 file_path_novembro = 'Controle_orcamento_novembro.xlsx'
