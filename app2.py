@@ -17,6 +17,13 @@ def get_last_update(file_path):
     timestamp = os.path.getmtime(file_path)
     return datetime.fromtimestamp(timestamp).strftime('%d/%m/%Y %H:%M:%S')
 
+# Obter as datas de última modificação das planilhas
+file_path_outubro = 'Controle_orcamento_outubro.xlsx'
+file_path_novembro = 'Controle_orcamento_novembro.xlsx'
+
+last_update_outubro = get_last_update(file_path_outubro)
+last_update_novembro = get_last_update(file_path_novembro)
+
 
 # Carregar os dados para uso em `app2.py`
 df_outubro = pd.read_excel('Controle_orcamento_outubro.xlsx', sheet_name='Base')
