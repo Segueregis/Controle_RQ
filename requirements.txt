@@ -8,4 +8,6 @@ pandas==1.5.3
 xlsxwriter==3.2.0
 dash-bootstrap-templates
 openpyxl
+pytz==2023.3
+
 
