@@ -14,7 +14,7 @@ app.config.suppress_callback_exceptions = True
 # Carregar as despesas da planilha
 df_outubro = pd.read_excel('Controle_orcamento_outubro.xlsx', sheet_name='Base')
 df_novembro = pd.read_excel('Controle_orcamento_novembro.xlsx', sheet_name='Base')
-df_dezembro = pd.read_excel('Controle_orcamento_dezembro.xlsx', sheet_name='Base')
+
 
 # Exemplo de Orçamento Fixo para cada UT e Categoria
 data = {
@@ -49,36 +49,6 @@ data = {
 }
 
 data_novembro = {
-    '12': {'UNIFORME': 1459.10, 'EPI': 3315.28, 'FERRAMENTAS': 1633.50, 'MATERIAL APLICADO': 3448.50,
-           'MATERIAL CONSUMO': 889.35, 'LOCAÇÃO MÁQUINAS': 381.15, 'DESPESA INFORMÁTICA': 80.00,
-           'DESPESA TELEFONES CELULARES': 419.35, 'SERVIÇOS CONTRATADOS': 1089.00,
-           'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.': 290.40,
-           'MANUTENÇÃO DE VEÍCULOS': 108.90, 'BENS DE VALORES IRRELEVANTES': 308.55},
-    '31': {'UNIFORME': 5272.79, 'EPI': 4583.69, 'FERRAMENTAS': 1452.00, 'MATERIAL APLICADO': 9801.00,
-           'MATERIAL CONSUMO': 13794.00, 'LOCAÇÃO CARROS': 5262.80, 'LOCAÇÃO GESTÃO ATIVOS': 11980.64,
-           'LOCAÇÃO MÁQUINAS': 7168.47, 'DESPESA INFORMÁTICA': 120.00, 'DESPESA TELEFONES CELULARES': 454.24,
-           'SERVIÇOS CONTRATADOS': 6534.00, 'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.': 7078.50,
-           'MANUTENÇÃO DE VEÍCULOS': 816.75,
-           'CARTÃO COMBUSTÍVEL': 3601.07, 'REFEIÇÕES EXTRAS': 110.00, 'PEDAGIO': 180.00,
-           'BENS DE VALORES IRRELEVANTES': 290.40,
-           'ESTACIONAMENTO': 20.00},
-    '26': {'UNIFORME': 2968.74, 'EPI': 2546.63, 'FERRAMENTAS': 889.35, 'MATERIAL APLICADO': 5000.00,
-           'MATERIAL CONSUMO': 5000.00, 'LOCAÇÃO MÁQUINAS': 10890.00, 'DESPESA INFORMÁTICA': 320.00,
-           'DESPESA TELEFONES CELULARES': 429.27, 'SERVIÇOS CONTRATADOS': 889.35,
-           'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.': 2286.90,
-           'MANUTENÇÃO DE VEÍCULOS': 108.90, 'CARTÃO COMBUSTÍVEL': 2281.90, 'PEDAGIO': 680.00,
-           'BENS DE VALORES IRRELEVANTES': 1089.00,
-           'LOCAÇÃO DE CARROS LEVES': 4531.56},
-    '20': {'UNIFORME': 930.12, 'EPI': 1329.40, 'FERRAMENTAS': 771.38, 'MATERIAL APLICADO': 95269.68,
-           'MATERIAL CONSUMO': 12877.75, 'LOCAÇÃO MÁQUINAS': 8893.50, 'DESPESA INFORMÁTICA': 120.00,
-           'DESPESA TELEFONES CELULARES': 93.19, 'SERVIÇOS CONTRATADOS': 9801.00,
-           'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.': 4083.75,
-           'MANUTENÇÃO DE VEÍCULOS': 381.15, 'CARTÃO COMBUSTÍVEL': 653.40, 'BENS DE VALORES IRRELEVANTES': 2178.00,
-           'MANUT. FERRAM. DISPOSITIVOS MOVEIS': 199.65, 'REFEIÇÕES EXTRAS': 420.00, 'TREINAMENTOS OBRIGATORIOS': 726.00,
-           'HOSPEDAGEM': 653.40, 'COMBUSTIVEL': 72.60,
-           'LOCAÇÃO DE CARROS LEVES': 1197.90, 'LOCAÇÃO GESTAO DE ATIVOS': 972.33}
-}
-data_dezembro = {
     '12': {'UNIFORME': 1459.10, 'EPI': 3315.28, 'FERRAMENTAS': 1633.50, 'MATERIAL APLICADO': 3448.50,
            'MATERIAL CONSUMO': 889.35, 'LOCAÇÃO MÁQUINAS': 381.15, 'DESPESA INFORMÁTICA': 80.00,
            'DESPESA TELEFONES CELULARES': 419.35, 'SERVIÇOS CONTRATADOS': 1089.00,
@@ -229,9 +199,8 @@ app.layout = dbc.Container([
                                 dcc.Dropdown(
                                     id='mes-dropdown',
                                     options=[{'label': 'Outubro', 'value': 'outubro'},
-                                             {'label': 'Novembro', 'value': 'novembro'},
-                                             {'label': 'Dezembro', 'value': 'dezembro'}],
-                                    value='dezembro',
+                                             {'label': 'Novembro', 'value': 'novembro'}],
+                                    value='novembro',
                                     placeholder="Selecione um mês",
                                     style={
                                         'width': '150px',
@@ -303,11 +272,7 @@ def update_graphs(selected_month):
         current_data = data
     else:
         df_excel = df_novembro
-        df_excel = df_dezembro
         current_data = data_novembro
-        current_data = data_dezembro
-
-
 
     ut_data = {ut_key: process_ut_data(ut_key, current_data[ut_key], df_excel) for ut_key in data.keys()}
 
