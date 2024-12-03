@@ -14,6 +14,8 @@ app.config.suppress_callback_exceptions = True
 # Carregar as despesas da planilha
 df_outubro = pd.read_excel('Controle_orcamento_outubro.xlsx', sheet_name='Base')
 df_novembro = pd.read_excel('Controle_orcamento_novembro.xlsx', sheet_name='Base')
+df_dezembro = pd.read_excel('Controle_orcamento_dezembro.xlsx', sheet_name='Base')
+
 
 
 # Exemplo de Orçamento Fixo para cada UT e Categoria
@@ -78,7 +80,36 @@ data_novembro = {
            'HOSPEDAGEM': 653.40, 'COMBUSTIVEL': 72.60,
            'LOCAÇÃO DE CARROS LEVES': 1197.90, 'LOCAÇÃO GESTAO DE ATIVOS': 972.33}
 }
-
+data_dezembro = {
+    '12': {'UNIFORME': 1500.00, 'EPI': 3400.00, 'FERRAMENTAS': 1700.00, 'MATERIAL APLICADO': 3500.00,
+           'MATERIAL CONSUMO': 900.00, 'LOCAÇÃO MÁQUINAS': 400.00, 'DESPESA INFORMÁTICA': 90.00,
+           'DESPESA TELEFONES CELULARES': 420.00, 'SERVIÇOS CONTRATADOS': 1100.00,
+           'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.': 300.00,
+           'MANUTENÇÃO DE VEÍCULOS': 110.00, 'BENS DE VALORES IRRELEVANTES': 320.00},
+    '31': {'UNIFORME': 5300.00, 'EPI': 4600.00, 'FERRAMENTAS': 1500.00, 'MATERIAL APLICADO': 9900.00,
+           'MATERIAL CONSUMO': 13800.00, 'LOCAÇÃO CARROS': 5300.00, 'LOCAÇÃO GESTÃO ATIVOS': 12000.00,
+           'LOCAÇÃO MÁQUINAS': 7200.00, 'DESPESA INFORMÁTICA': 130.00, 'DESPESA TELEFONES CELULARES': 460.00,
+           'SERVIÇOS CONTRATADOS': 6600.00, 'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.': 7100.00,
+           'MANUTENÇÃO DE VEÍCULOS': 820.00,
+           'CARTÃO COMBUSTÍVEL': 3650.00, 'REFEIÇÕES EXTRAS': 120.00, 'PEDAGIO': 190.00,
+           'BENS DE VALORES IRRELEVANTES': 300.00,
+           'ESTACIONAMENTO': 30.00},
+    '26': {'UNIFORME': 3000.00, 'EPI': 2600.00, 'FERRAMENTAS': 900.00, 'MATERIAL APLICADO': 5100.00,
+           'MATERIAL CONSUMO': 5100.00, 'LOCAÇÃO MÁQUINAS': 11000.00, 'DESPESA INFORMÁTICA': 330.00,
+           'DESPESA TELEFONES CELULARES': 440.00, 'SERVIÇOS CONTRATADOS': 900.00,
+           'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.': 2300.00,
+           'MANUTENÇÃO DE VEÍCULOS': 110.00, 'CARTÃO COMBUSTÍVEL': 2300.00, 'PEDAGIO': 690.00,
+           'BENS DE VALORES IRRELEVANTES': 1100.00,
+           'LOCAÇÃO DE CARROS LEVES': 4600.00},
+    '20': {'UNIFORME': 940.00, 'EPI': 1340.00, 'FERRAMENTAS': 780.00, 'MATERIAL APLICADO': 96000.00,
+           'MATERIAL CONSUMO': 13000.00, 'LOCAÇÃO MÁQUINAS': 8900.00, 'DESPESA INFORMÁTICA': 130.00,
+           'DESPESA TELEFONES CELULARES': 100.00, 'SERVIÇOS CONTRATADOS': 9900.00,
+           'MATERIAIS E PEÇAS DE REPOSIÇÃO EQUIP.': 4100.00,
+           'MANUTENÇÃO DE VEÍCULOS': 390.00, 'CARTÃO COMBUSTÍVEL': 660.00, 'BENS DE VALORES IRRELEVANTES': 2200.00,
+           'MANUT. FERRAM. DISPOSITIVOS MOVEIS': 200.00, 'REFEIÇÕES EXTRAS': 430.00, 'TREINAMENTOS OBRIGATORIOS': 740.00,
+           'HOSPEDAGEM': 660.00, 'COMBUSTIVEL': 75.00,
+           'LOCAÇÃO DE CARROS LEVES': 1200.00, 'LOCAÇÃO GESTAO DE ATIVOS': 980.00}
+}
 
 # Função para processar os dados de cada UT
 def process_ut_data(ut_key, data, df_excel):
@@ -125,6 +156,7 @@ def criar_grafico(df, ut_key):
 
 # Dados e gráficos para cada UT
 ut_data = {ut_key: process_ut_data(ut_key, data[ut_key], df_outubro) for ut_key in data.keys()}
+ut_data = {ut_key: process_ut_data(ut_key, data_dezembro[ut_key], df_dezembro) for ut_key in ['12', '31', '26', '20']}
 figures = {ut_key: criar_grafico(ut_data[ut_key][0], ut_key) for ut_key in ut_data.keys()}
 
 # Configuração do menu hambúrguer com ícone personalizado
@@ -199,8 +231,9 @@ app.layout = dbc.Container([
                                 dcc.Dropdown(
                                     id='mes-dropdown',
                                     options=[{'label': 'Outubro', 'value': 'outubro'},
-                                             {'label': 'Novembro', 'value': 'novembro'}],
-                                    value='novembro',
+                                             {'label': 'Novembro', 'value': 'novembro'},
+                                             {'label': 'Dezembro', 'value': 'dezembro'}],
+                                    value='dezembro',
                                     placeholder="Selecione um mês",
                                     style={
                                         'width': '150px',
@@ -270,9 +303,16 @@ def update_graphs(selected_month):
     if selected_month == 'outubro':
         df_excel = df_outubro
         current_data = data
-    else:
+    elif selected_month == 'novembro':
         df_excel = df_novembro
         current_data = data_novembro
+    elif selected_month == 'dezembro':
+        df_excel = df_dezembro  # Aqui, você precisa definir o df_dezembro
+        current_data = data_dezembro  # E também o data_dezembro
+    else:
+        # Se o mês selecionado não for outubro, novembro nem dezembro, você pode definir um comportamento padrão
+        df_excel = df_outubro
+        current_data = data
 
     ut_data = {ut_key: process_ut_data(ut_key, current_data[ut_key], df_excel) for ut_key in data.keys()}
 
