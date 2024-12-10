@@ -7,6 +7,8 @@ import pytz
 from flask import Flask
 from datetime import datetime
 
+from teste import df_dezembro
+
 # Inicializar o servidor Flask
 server = Flask(__name__)
 
@@ -18,19 +20,20 @@ def get_last_update(file_path):
     timestamp = os.path.getmtime(file_path)
     local_time = datetime.fromtimestamp(timestamp)
     brasilia_tz = pytz.timezone('America/Sao_Paulo')  # Definir o fuso horário de Brasília
-    local_time = local_time.astimezone(brasilia_tz)   # Converter para o fuso horário de Brasília
+    local_time = local_time.astimezone(brasilia_tz)  # Converter para o fuso horário de Brasília
     return local_time.strftime('%d/%m/%Y %H:%M:%S')
-
 
 # Obter as datas de última modificação das planilhas
 file_path_novembro = 'Controle_orcamento_novembro.xlsx'
+file_path_dezembro = 'Controle_orcamento_dezembro.xlsx'
 
 last_update_novembro = get_last_update(file_path_novembro)
-
+last_update_dezembro = get_last_update(file_path_dezembro)
 
 # Carregar os dados para uso em `app2.py`
 df_outubro = pd.read_excel('Controle_orcamento_outubro.xlsx', sheet_name='Base')
 df_novembro = pd.read_excel('Controle_orcamento_novembro.xlsx', sheet_name='Base')
+df_dezembro = pd.read_excel('Controle_orcamento_dezembro.xlsx', sheet_name='Base')
 
 # Layout do segundo dashboard
 app2.layout = dbc.Container([
@@ -38,12 +41,9 @@ app2.layout = dbc.Container([
         dbc.Col(html.H3("Dashboard Número RQ"), width="auto")
     ]),
     dbc.Row([
-
-        dbc.Col(html.P(f"Última atualização (Novembro): {last_update_novembro}"), width="auto")
+        dbc.Col(html.P(f"Última atualização (Dezembro): {last_update_dezembro}"), width="auto")
     ]),
-
     dbc.Row([
-        
         dbc.Col(dcc.Input(id="rq-input", type="text", placeholder="Digite o Número RQ")),
         dbc.Col(dcc.DatePickerSingle(id='data-inicio', placeholder='Data Início')),
         dbc.Col(dcc.DatePickerSingle(id='data-fim', placeholder='Data Fim')),
@@ -55,7 +55,7 @@ app2.layout = dbc.Container([
             id="rq-table",
             style_table={
                 'overflowX': 'auto',
-                'maxHeight': '500px',   # Define a altura máxima para a tabela com barra de rolagem
+                'maxHeight': '500px',  # Define a altura máxima para a tabela com barra de rolagem
                 'overflowY': 'auto',
                 'position': 'relative',
             },
@@ -93,8 +93,8 @@ def update_table_and_download(n_clicks_buscar, n_clicks_download, rq_number, dat
     # Determinar qual botão foi clicado por último
     triggered_id = callback_context.triggered[0]["prop_id"].split(".")[0]
 
-    # Concatenar os dados de outubro e novembro
-    df_combined = pd.concat([df_outubro, df_novembro])
+    # Concatenar os dados de outubro, novembro e dezembro
+    df_combined = pd.concat([df_outubro, df_novembro, df_dezembro])
 
     # Filtrar pelo Número RQ, se fornecido
     if rq_number:
@@ -127,10 +127,7 @@ def update_table_and_download(n_clicks_buscar, n_clicks_download, rq_number, dat
     if triggered_id == "download-excel" and not df_filtered.empty:
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-            # Converte a coluna 'DESPESAS' para número antes de salvar no Excel
-            df_excel = df_filtered.copy()
-            df_excel['DESPESAS'] = df_excel['DESPESAS'].replace({'R\$ ': '', ',': ''}, regex=True).astype(float)
-            df_excel.to_excel(writer, index=False, sheet_name='Dados Filtrados')
+            df_filtered.to_excel(writer, index=False, sheet_name='Dados Filtrados')
             writer.close()
         buffer.seek(0)
         return data, columns, dcc.send_bytes(buffer.getvalue(), "dados_filtrados.xlsx"), "download-excel"
@@ -143,5 +140,9 @@ def update_table_and_download(n_clicks_buscar, n_clicks_download, rq_number, dat
 @app2.server.route('/app2')
 def serve_app2():
     return app2.layout  # Retorna o layout de app2
+
+# Executar o app
+if __name__ == "__main__":
+    app2.run_server(debug=True)
 
 # Não é necessário redefinir o 'server' aqui. O servidor já foi atribuído.
