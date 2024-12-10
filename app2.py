@@ -7,7 +7,7 @@ import pytz
 from flask import Flask
 from datetime import datetime
 
-from teste import df_dezembro
+from app2 import df_dezembro
 
 # Inicializar o servidor Flask
 server = Flask(__name__)
@@ -141,8 +141,6 @@ def update_table_and_download(n_clicks_buscar, n_clicks_download, rq_number, dat
 def serve_app2():
     return app2.layout  # Retorna o layout de app2
 
-# Executar o app
-if __name__ == "__main__":
-    app2.run_server(debug=True)
+
 
 # Não é necessário redefinir o 'server' aqui. O servidor já foi atribuído.
